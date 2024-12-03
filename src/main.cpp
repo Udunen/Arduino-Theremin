@@ -1,30 +1,49 @@
 #include <Arduino.h>
 #include "constants.h"
 #include "autoTune.h"
+#include "songs.h"
 
 using namespace constants;
 
 float duration, distance; // variables for tracking distance from the sensor
 float inchesToPitch(float inches); // initialize function so we can convert inches to pitch
 
+
+// need toggle for switching between theremin and pre-made songs
 int togglePushCounter = 0;
 int toggleState = 0;
 int lasttoggleState = 0;
+
+// toggle for each song
+int song1PushCounter = 0;
+int song1State = 0;
+int lastSong1State = 0;
+
+int song2PushCounter = 0;
+int song2State = 0;
+int lastSong2State = 0;
+
+
+int stopState = 0; // state of the potentiometer
 
 void setup() {
   // initialize pins
   pinMode(TRIG, OUTPUT);
   pinMode(ECHO, INPUT);
   pinMode(BUZZER, OUTPUT);
+  pinMode(TOGGLE_LED, OUTPUT);
   pinMode(TOGGLE, INPUT);
   pinMode(SONG_1, INPUT);
   pinMode(SONG_2, INPUT);
+  pinMode(SONG_1_LED, OUTPUT);
+  pinMode(SONG_2_LED, OUTPUT);
   Serial.begin(9600); // begin serial so we can track data
 }
 
 void loop() {
-  toggleState = digitalRead(TOGGLE);
+  toggleState = digitalRead(TOGGLE); // state of the toggle buttom
 
+  // edge detector for the toggle button
   if (toggleState != lasttoggleState) {
     if (toggleState == HIGH) {
       togglePushCounter++;
@@ -33,7 +52,10 @@ void loop() {
   }
   lasttoggleState = toggleState;
 
+  // every press toggles, so theres 2 states
   if (togglePushCounter % 2 == 0) {
+    digitalWrite(TOGGLE_LED, HIGH); // indicate that system is in theremin mode
+
     // set TRIG pin to low to ensure a clean pulse of sound from the distance sensor
     digitalWrite(TRIG, LOW);
     delay(2);
@@ -51,7 +73,8 @@ void loop() {
     distance = (duration * SPEED_OF_SOUND) / 2; 
 
     // if the distance is in our range, output tone from the buzzer
-    if(distance >= LOW_DIST && distance <= HIGH_DIST) {
+    if (distance >= LOW_DIST && distance <= HIGH_DIST) {
+      // print everything
       Serial.print("Distance: ");
       Serial.println(distance);
       Serial.print("Current Frequency: ");
@@ -61,9 +84,51 @@ void loop() {
       tone(BUZZER, autoTune(inchesToPitch(distance)), 100);
     }
   } else {
-    
-  }
+    digitalWrite(TOGGLE_LED, LOW); // not in theremin mode, so indicator LED is low
 
+    // states of the song buttons
+    song1State = digitalRead(SONG_1);
+    song2State = digitalRead(SONG_2);
+
+    stopState = analogRead(STOP); // state of the potentiometer
+    Serial.print(stopState);
+
+    // edge detectors for each song button
+    if (song1State != lastSong1State) {
+      if (song1State == HIGH) {
+        song1PushCounter++;
+      }
+      delay(50);
+    }
+    lastSong1State = song1State;
+
+    if (song2State != lastSong2State) {
+      if (song2State == HIGH) {
+        song2PushCounter++;
+      }
+      delay(50);
+    }
+    lastSong2State = song2State;
+
+    // 2 states, song plays or not
+    if (song1PushCounter % 2 == 0) {
+      digitalWrite(SONG_1_LED, HIGH); // indicate the song is active
+      if (stopState > 512) { // stop the song if potentiometer is low
+        hotToGo();
+      }
+    } else {
+      digitalWrite(SONG_1_LED, LOW); // indicate the song is inactive
+    }
+
+    if (song2PushCounter % 2 == 0) {
+      digitalWrite(SONG_2_LED, HIGH);
+      if (stopState > 512) {
+        minecraft();
+      }
+    } else {
+      digitalWrite(SONG_2_LED, LOW);
+    }
+  }
 }
 
 // convert inches to pitch using an equation
@@ -84,44 +149,4 @@ float inchesToPitch(float inches) {
             change in inches
   */
   return ((maxPitch-minPitch)/(maxInches-minInches))*(inches - LOW_DIST) + minPitch;
-}
-
-void hotToGo() {
-  tone(BUZZER, A_SHARP_3, 1000); // h
-  delay(1000);
-  tone(BUZZER, C_SHARP_4, 1000); // o
-  delay(1000);
-  tone(BUZZER, C_SHARP_4, 1000); // t
-  delay(1000);
-  tone(BUZZER, C_SHARP_4, 1000); // t
-  delay(1000);
-  tone(BUZZER, D_SHARP_4, 1000); // o
-  delay(1000);
-  tone(BUZZER, C_SHARP_4, 1000); // g
-  delay(1000);
-  tone(BUZZER, D_SHARP_4, 1000); // o 
-  delay(1000);
-  tone(BUZZER, C_SHARP_4, 1000); // o PART 2
-  delay(1000);
-
-  tone(BUZZER, A_SHARP_3, 1000); // you
-  delay(1000);
-  tone(BUZZER, C_SHARP_4, 1000); // can
-  delay(1000);
-  tone(BUZZER, F_SHARP_4, 1000); // take
-  delay(1000);
-  tone(BUZZER, G_SHARP_4, 1000); // me
-  delay(1000);
-  tone(BUZZER, G_SHARP_4, 1000); // hot
-  delay(1000);
-  tone(BUZZER, A_SHARP_4, 1000); // to
-  delay(1000);
-  tone(BUZZER, G_SHARP_4, 1000); // go
-  delay(1000);
-  tone(BUZZER, F_SHARP_4, 1000); // go PART 2
-  delay(1000);
-}
-
-void minecraft() {
-  
 }

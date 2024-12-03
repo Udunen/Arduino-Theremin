@@ -4,13 +4,22 @@
 
 // this is where we define all of our constants, like pin numbers, real-world variables and ranges we use for math
 namespace constants {
+    const int STOP = A0;
+
     const int TRIG = 7;
     const int ECHO = 6;
     const int BUZZER = 8;
 
-    const int SONG_1 = 10;
-    const int SONG_2 = 11;
+    const int SONG_1_LED = 2;
+    const int SONG_2_LED = 3;
+    const int TOGGLE_LED = 9;
+
+    const int SONG_1 = 11;
+    const int SONG_2 = 10;
     const int TOGGLE = 12;
+
+    const float SONG_1_BPM = 140.0;
+    const float SONG_2_BPM = 84.0;
 
     const float SPEED_OF_SOUND = 0.01350393302; // speed of sound in inches/microsecond
 
@@ -32,8 +41,7 @@ namespace constants {
         const float A_3 = 220;
         const float A_SHARP_3 = 233.08;
         const float B_3 = 246.94;
-        
-        // probably only gonna use these for theremin
+
         const float C_4 = 261.63;
         const float C_SHARP_4 = 277.18;
         const float D_4 = 293.66;

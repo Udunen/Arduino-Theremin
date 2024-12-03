@@ -34,6 +34,9 @@ float noteList[] = {
     F_SHARP_6,
     G_6,
     G_SHARP_6,
+    A_6,
+    A_SHARP_6,
+    B_6
 };
 
 // autoTune to the closest pitch in the list
