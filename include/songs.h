@@ -34,7 +34,7 @@ void hotToGo() {
   tone(BUZZER, C_SHARP_4, beatDuration/2); // o PART 2
   delay(beatDuration/2);
 
-  tone(BUZZER, 0, beatDuration/2); // rest
+  noTone(BUZZER); // rest
   delay(beatDuration/2);
 
   tone(BUZZER, A_SHARP_3, beatDuration); // you
@@ -54,7 +54,7 @@ void hotToGo() {
   tone(BUZZER, F_SHARP_4, beatDuration/2); // go PART 2
   delay(beatDuration/2);
 
-  tone(BUZZER, 0, beatDuration);
+  noTone(BUZZER);
   delay(beatDuration); // delay before repeat
 }
 
@@ -70,7 +70,7 @@ void minecraft() {
   tone(BUZZER, F_SHARP_4, beatDuration*2);
   delay(beatDuration*2);
 
-  tone(BUZZER, 0, beatDuration/2);
+  noTone(BUZZER);
   delay(beatDuration/2);
   
   tone(BUZZER, A_SHARP_4, beatDuration*1.5);
@@ -82,7 +82,7 @@ void minecraft() {
   tone(BUZZER, C_SHARP_4, beatDuration*2);
   delay(beatDuration*2);
 
-  tone(BUZZER, 0, beatDuration/2);
+  noTone(BUZZER);
   delay(beatDuration/2);
 }
 

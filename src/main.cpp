@@ -24,8 +24,6 @@ int song2State = 0;
 int lastSong2State = 0;
 
 
-int stopState = 0; // state of the potentiometer
-
 void setup() {
   // initialize pins
   pinMode(TRIG, OUTPUT);
@@ -90,8 +88,6 @@ void loop() {
     song1State = digitalRead(SONG_1);
     song2State = digitalRead(SONG_2);
 
-    stopState = analogRead(STOP); // state of the potentiometer
-    Serial.print(stopState);
 
     // edge detectors for each song button
     if (song1State != lastSong1State) {
@@ -113,18 +109,16 @@ void loop() {
     // 2 states, song plays or not
     if (song1PushCounter % 2 == 0) {
       digitalWrite(SONG_1_LED, HIGH); // indicate the song is active
-      if (stopState > 512) { // stop the song if potentiometer is low
-        hotToGo();
-      }
+      hotToGo();
+      song1PushCounter++; // make it only play the song once
     } else {
       digitalWrite(SONG_1_LED, LOW); // indicate the song is inactive
     }
 
     if (song2PushCounter % 2 == 0) {
       digitalWrite(SONG_2_LED, HIGH);
-      if (stopState > 512) {
-        minecraft();
-      }
+      minecraft();
+      song2PushCounter++;
     } else {
       digitalWrite(SONG_2_LED, LOW);
     }

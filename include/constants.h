@@ -4,8 +4,6 @@
 
 // this is where we define all of our constants, like pin numbers, real-world variables and ranges we use for math
 namespace constants {
-    const int STOP = A0;
-
     const int TRIG = 7;
     const int ECHO = 6;
     const int BUZZER = 8;
